@@ -1,0 +1,312 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
+
+
+public class usergui extends JFrame implements ActionListener
+{
+	PCcontroller PC = new PCcontroller();
+	ArrayList <user> US = new ArrayList <user>();
+	
+	int num;
+	seat seat[] = new seat[20];
+	boolean click[] = {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,};
+	
+	FileOutputStream fout = null;
+	ObjectOutputStream oos = null;
+	
+	JFrame jf = new JFrame();
+	JPanel jp = new JPanel();
+	JLabel jl = new JLabel("PC방 관리 매니저");
+	JLabel jl1 = new JLabel();
+	
+	Menu menu = new Menu("메뉴");
+	MenuItem save = new MenuItem("저장");
+	MenuItem logout = new MenuItem("로그아웃");
+	MenuBar menuBar = new MenuBar();
+	
+	JPanel seatP1 = new JPanel();
+	JPanel seatP = new JPanel();
+	JLabel seatL = new JLabel("[자리현황]");
+	JButton seatB [] = new JButton[20];
+	
+	JPanel pcuseprintP2 = new JPanel();
+	JPanel pcuseprintP1 = new JPanel();
+	JPanel pcuseprintP = new JPanel();
+	JLabel pcuseprintL = new JLabel("[PC 사용 내역]");
+	JTextArea pcuseprintT = new JTextArea();
+	JButton pcuseprintstartB = new JButton("사용시작");
+	JButton pcuseprintfinishB = new JButton("사용종료");
+	JButton pcuseprintpayB = new JButton("결제");
+	
+	JPanel stateP1 = new JPanel();
+	JPanel stateP = new JPanel();
+	JLabel stateL = new JLabel("[전체 사용자 내역]");
+	String tablemenu[] = {"일련번호","시작 시각","종료 시각","사용 자리","지불 금액"};
+	DefaultTableModel model = new DefaultTableModel(tablemenu,0);
+	JTable table = new JTable(model);
+	JScrollPane scroll = new JScrollPane(table); 
+	
+	usergui(int num)
+	{
+		this.num = num;
+		for(int i=0;i<seat.length;i++)
+		{
+			seat[i] = new seat(true,false,false,0,0,"["+(i+1)+"번 자리]\n","0","0",0);
+		}
+		jf.setLayout(null);
+		jf.setTitle("PC방 관리 매니저");
+		jf.setSize(1200, 600);
+		jf.getContentPane().setBackground(Color.LIGHT_GRAY);
+		
+		jl1 = new JLabel("접속 가맹점 : "+PC.clientlist.get(num).getcompanyname()+" "+PC.clientlist.get(num).getcompanylocate()+"지점");
+		jl1.setBounds(800,10,250,30);
+		jp.add(jl1);
+		
+		menu.add(logout);
+		logout.addActionListener(this);
+		menu.add(save);
+		save.addActionListener(this);
+		menuBar.add(menu);
+		
+		jf.setMenuBar(menuBar);
+		jp.setLayout(new BorderLayout());
+		jp.setBounds(10, 5, 1160, 40);
+		jl.setFont(new Font("필기체",1,30));
+		jp.setBorder(new LineBorder(Color.black, 1));
+		jp.setBackground(Color.WHITE);
+		jp.add(jl,"Center");
+		jl.setHorizontalAlignment(JLabel.CENTER);
+		jf.add(jp);
+		
+		seatL.setBounds(10,50,180,30);
+		seatP1.setLayout(null);
+		seatP.setLayout(new GridLayout(4,5,30,40));
+		seatP1.setBounds(10, 85, 400, 440);
+		seatP1.setBorder(new LineBorder(Color.black, 1));
+		seatP.setBounds(50,10,290,420);
+		
+		for(int i = 0;i<20;i++)
+		{
+			seatB [i] = new JButton(Integer.toString(i+1));
+			seatB[i].setBackground(Color.white);
+			seatB[i].setBorder(new LineBorder(Color.black,1));
+			seatB[i].addActionListener(this);	
+			seatP.add(seatB[i]);
+		}
+		jf.add(seatL);
+		seatP1.add(seatP);
+		jf.add(seatP1);
+		
+		pcuseprintL.setBounds(430,50,180,30);
+		pcuseprintP1.setLayout(null);
+		pcuseprintP1.setBounds(430, 85, 300, 440);
+		pcuseprintP1.setBorder(new LineBorder(Color.black,1));
+		pcuseprintP2.setLayout(new GridLayout(1,3));
+		pcuseprintP2.add(pcuseprintstartB);
+		pcuseprintstartB.addActionListener(this);	
+		pcuseprintP2.add(pcuseprintfinishB);
+		pcuseprintfinishB.addActionListener(this);	
+		pcuseprintP2.add(pcuseprintpayB);
+		pcuseprintpayB.addActionListener(this);	
+		pcuseprintP.setLayout(new BorderLayout());
+		pcuseprintP.setBounds(10,10,280,420);
+		pcuseprintP.add(pcuseprintT,"Center");
+		pcuseprintT.setEditable(false);
+		pcuseprintP.add(pcuseprintP2,"South");
+		pcuseprintP.setBorder(new LineBorder(Color.black,1));
+		jf.add(pcuseprintL);
+		pcuseprintP1.add(pcuseprintP);
+		jf.add(pcuseprintP1);
+		
+		stateL.setBounds(750,50,180,30);
+		stateP1.setLayout(null);
+		stateP1.setBounds(750,85,420,440);
+		stateP1.setBorder(new LineBorder(Color.black,1));
+		stateP.setLayout(new BorderLayout());
+		stateP.setBounds(10,10,400,420);
+		scroll.setFocusable(false);
+		for(int i=0;i<PC.clientlist.get(num).getUS().size();i++)	
+		{
+			model.addRow(new Object[]{PC.clientlist.get(num).getUS().get(i).getilnum()+"번 손님",PC.clientlist.get(num).getUS().get(i).getstime(),PC.clientlist.get(num).getUS().get(i).getftime(),PC.clientlist.get(num).getUS().get(i).getseatnum()+"번 자리",PC.clientlist.get(num).getUS().get(i).gettotalprice()+"원"});
+		}
+		table.setEnabled(false);
+		stateP.add(scroll);
+		scroll.setBorder(new LineBorder(Color.black,1));
+		jf.add(stateL);
+		stateP1.add(stateP);
+		jf.add(stateP1);
+		
+		jf.setVisible(true);
+	}
+	
+	public void logout()
+	{
+		for(int i=0;i<PC.clientlist.get(num).getUS().size()-1;i++)
+		{
+			model.removeRow(0);
+		}
+		jf.dispose();
+		logingui login = new logingui();
+	}
+	
+	public void save()
+	{
+		JOptionPane.showMessageDialog(null, "저장되었습니다.");
+		try{
+			fout = new FileOutputStream("clientlist.dat");
+			oos = new ObjectOutputStream(fout);
+			oos.writeObject(PC.clientlist);
+			oos.reset();
+		}catch(Exception ex){
+		}finally{
+			try{
+				oos.close();
+				fout.close();
+			}catch(IOException ioe){}
+		}
+	}
+	
+	public void seatB(int j)
+	{
+		for(int i=0;i<click.length;i++)
+		{
+			click[i]=false;
+		}
+		pcuseprintT.setText(seat[j].getprint());
+		click[j] = true;
+	}
+
+	public void pcuseprintstartB(int j)
+	{
+		if(seat[j].isUse()==true)
+		{
+			JOptionPane.showMessageDialog(null, "이미 사용중인 자리입니다.");
+		}
+		else if(!seat[j].ispay())
+		{
+			JOptionPane.showMessageDialog(null, "아직 결제가 완료되지 않은 자리입니다.");
+		}
+		else
+		{
+			Date today = new Date();
+			SimpleDateFormat time = new SimpleDateFormat("a hh시 mm분 ss초");
+			seat[j].setprint(seat[j].getprint()+"["+time.format(today)+"] 사용시작\n");
+			seat[j].setUse(true);
+			seat[j].setpay(false);
+			seatB[j].setBackground(Color.green);
+			seat[j].setStimehour(today.getHours());
+			seat[j].setStimemin(today.getMinutes());
+			seat[j].setstime("["+time.format(today)+"]");
+			pcuseprintT.setText(seat[j].getprint());
+		}
+	}
+	
+	public void pcuseprintfinishB(int j)
+	{
+		if(!seat[j].isUse())
+		{
+			JOptionPane.showMessageDialog(null, "이미 사용이 종료된 자리입니다.");
+		}
+		else
+		{
+			Date today = new Date();
+			SimpleDateFormat time = new SimpleDateFormat("a hh시 mm분 ss초");
+			seat[j].setprint(seat[j].getprint()+"["+time.format(today)+"] 사용종료\n");
+			seat[j].setUse(false);
+			seat[j].setftime("["+time.format(today)+"]");
+			seatB[j].setBackground(Color.red);
+			int totalmin = today.getHours()*60+today.getMinutes()-seat[j].getStimehour()*60-seat[j].getStimemin();
+			int totalprice = (int) ((totalmin/10)*200.0);
+			seat[j].setprint(seat[j].getprint()+"총 사용시간(분) : "+totalmin+"\n");
+			seat[j].setprint(seat[j].getprint()+"총  지불금액 : "+totalprice+"\n");
+			seat[j].settotalprice(totalprice);
+			pcuseprintT.setText(seat[j].getprint());
+		}
+	}
+	
+	public void pcuseprintpayB(int j)
+	{
+		if(seat[j].isUse())
+		{
+			JOptionPane.showMessageDialog(null, "아직 사용중인 자리입니다.");
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(null, "지불되었습니다.");
+			PC.clientlist.get(num).getUS().add(new user(PC.clientlist.get(num).getUS().size()+1,seat[j].getstime(),seat[j].getftime(),seat[j].gettotalprice(),j+1));
+			seat[j] = new seat(true,false,false,0,0,"["+(j+1)+"번 자리]\n","0","0",0);
+			seatB[j].setBackground(Color.white);
+			for(int i=0;i<PC.clientlist.get(num).getUS().size()-1;i++)
+			{
+				model.removeRow(0);
+			}
+			for(int i=0;i<PC.clientlist.get(num).getUS().size();i++)	
+			{
+				model.addRow(new Object[]{PC.clientlist.get(num).getUS().get(i).getilnum()+"번 손님",PC.clientlist.get(num).getUS().get(i).getstime(),PC.clientlist.get(num).getUS().get(i).getftime(),PC.clientlist.get(num).getUS().get(i).getseatnum()+"번 자리",PC.clientlist.get(num).getUS().get(i).gettotalprice()+"원"});
+			}
+			pcuseprintT.setText(seat[j].getprint());
+		}
+	}
+	
+	public void actionPerformed(ActionEvent e) 
+	{
+		if(e.getSource()==logout)
+		{
+			logout();
+		}
+		else if(e.getSource()==save)
+		{
+			save();
+		}
+		for(int j=0;j<20;j++)
+		{
+			if(e.getSource()==seatB[j])
+			{
+				seatB(j);	
+			}
+		}
+		for(int j = 0; j < 20; j ++)
+		{
+			if(click[j]==true)
+			{
+				if(e.getSource()==pcuseprintstartB)
+				{
+					pcuseprintstartB(j);
+				}
+				else if(e.getSource()==pcuseprintfinishB)
+				{
+					pcuseprintfinishB(j);
+				}
+				
+				else if(e.getSource()==pcuseprintpayB)
+				{
+					pcuseprintpayB(j);
+				}
+			}
+		}
+	}
+}
