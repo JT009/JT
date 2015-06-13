@@ -1,0 +1,291 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
+
+public class adminmodegui extends JFrame implements ActionListener 
+{
+	PCcontroller PC = new PCcontroller();
+	
+	FileOutputStream fout = null;
+	ObjectOutputStream oos = null;
+
+	JFrame jf = new JFrame();
+	JLabel jl = new JLabel("관리자 모드");
+	JPanel jp = new JPanel();
+	
+	Menu menu = new Menu("메뉴");
+	MenuItem save = new MenuItem("저장");
+	MenuBar menuBar = new MenuBar();
+	
+	JLabel tableL = new JLabel("[가맹점 목록]");
+	JPanel tableP = new JPanel();
+	String tablemenu[] = {"일련번호","가맹상호명","아이디","비밀번호","지역","전화번호"};
+	DefaultTableModel model = new DefaultTableModel(tablemenu,0);
+	JTable table = new JTable(model);
+	JScrollPane scroll = new JScrollPane(table); 
+	
+	JLabel removeL = new JLabel("[가맹점 삭제]");
+	JPanel removeP = new JPanel();
+	JLabel removeL1 = new JLabel("일련번호");
+	JTextField removeT = new JTextField();
+	JButton removeB = new JButton("제거");
+	JButton cancelB = new JButton("취소");
+	
+	JPanel modifyP = new JPanel();
+	JLabel modifyL = new JLabel("[가맹점 정보 수정]");
+	JLabel modifyL1 = new JLabel("일련번호");
+	JLabel modifyL2 = new JLabel("가맹상호명");
+	JLabel modifyL3 = new JLabel("아이디");
+	JLabel modifyL4 = new JLabel("비밀번호");
+	JLabel modifyL5 = new JLabel("지역");
+	JLabel modifyL6 = new JLabel("전화번호");
+	JTextField modifyT1 = new JTextField();
+	JTextField modifyT2 = new JTextField();
+	JTextField modifyT3 = new JTextField();
+	JTextField modifyT4 = new JTextField();
+	JTextField modifyT5 = new JTextField();
+	JTextField modifyT6 = new JTextField();
+	JButton modifyB = new JButton("수정");
+	JButton modifyB2 = new JButton("취소");
+	 
+	adminmodegui()
+	{
+		jf.setLayout(null);
+		jf.setTitle("관리자 모드");
+		jf.setSize(1000, 550);
+		jf.getContentPane().setBackground(Color.LIGHT_GRAY);
+		
+		menu.add(save);
+		save.addActionListener(this);
+		menuBar.add(menu);
+		jf.setMenuBar(menuBar);
+		
+		jp.setLayout(new BorderLayout());
+		jp.setBounds(10, 5, 960, 40);
+		jl.setFont(new Font("필기체",1,30));
+		jp.setBorder(new LineBorder(Color.black, 1));
+		jp.setBackground(Color.WHITE);
+		jp.add(jl,"Center");
+		jl.setHorizontalAlignment(JLabel.CENTER);
+		jf.add(jp);
+		
+		tableL.setBounds(10,50,180,30);
+		tableP.setLayout(null);
+		tableP.setBounds(10,85,600,300);
+		tableP.setBorder(new LineBorder(Color.black,1));
+		scroll.setBounds(20,20,560,260);
+		for(int i=0;i<PC.clientlist.size();i++)	
+		{
+			model.addRow(new Object[]{(i+1),PC.clientlist.get(i).getcompanyname(),PC.clientlist.get(i).getcompanyid(),PC.clientlist.get(i).getcompanypw(),PC.clientlist.get(i).getcompanylocate(),PC.clientlist.get(i).getcompanyphonenum()});
+		}
+		table.setEnabled(false);
+		scroll.setBorder(new LineBorder(Color.black,1));
+		tableP.add(scroll);
+		jf.add(tableL);
+		jf.add(tableP);
+		
+		removeL.setBounds(10,390,180,30);
+		removeP.setLayout(null);
+		removeP.setBounds(10,425,600,50);
+		removeP.setBorder(new LineBorder(Color.black,1));
+		removeL1.setBounds(50,10,100,30);
+		removeT.setBounds(125,10,100,30);
+		removeB.setBounds(300,10,100,30);
+		removeB.addActionListener(this);
+		cancelB.setBounds(460,10,100,30);
+		removeP.add(removeL1);
+		removeP.add(removeT);
+		removeP.add(removeB);
+		removeP.add(cancelB);
+		jf.add(removeL);
+		jf.add(removeP);
+		
+		modifyL.setBounds(630,50,180,30);
+		modifyP.setLayout(null);
+		modifyP.setBounds(630,85,340,390);
+		modifyP.setBorder(new LineBorder(Color.black,1));
+		modifyL1.setBounds(30,30,100,30);
+		modifyT1.setBounds(120,30,180,30);
+		modifyL2.setBounds(30,70,100,30);
+		modifyT2.setBounds(120,70,180,30);
+		modifyL3.setBounds(30,110,100,30);
+		modifyT3.setBounds(120,110,180,30);
+		modifyL4.setBounds(30,150,100,30);
+		modifyT4.setBounds(120,150,180,30);
+		modifyL5.setBounds(30,190,100,30);
+		modifyT5.setBounds(120,190,180,30);
+		modifyL6.setBounds(30,230,100,30);
+		modifyT6.setBounds(120,230,180,30);
+		modifyB.setBounds(30,300,100,30);
+		modifyB.addActionListener(this);
+		modifyB2.setBounds(200,300,100,30);
+		modifyB2.addActionListener(this);
+		modifyP.add(modifyB);
+		modifyP.add(modifyB2);
+		modifyP.add(modifyL1);
+		modifyP.add(modifyT1);
+		modifyP.add(modifyL2);
+		modifyP.add(modifyT2);
+		modifyP.add(modifyL3);
+		modifyP.add(modifyT3);
+		modifyP.add(modifyL4);
+		modifyP.add(modifyT4);
+		modifyP.add(modifyL5);
+		modifyP.add(modifyT5);
+		modifyP.add(modifyL6);
+		modifyP.add(modifyT6);
+		jf.add(modifyL);
+		jf.add(modifyP);
+		
+		jf.setVisible(true);
+	}
+	
+	public void removeB()
+	{
+		for(int i=0;i<PC.clientlist.size();i++)
+		{
+			model.removeRow(0);
+		}
+		if(Integer.parseInt(removeT.getText())>=PC.clientlist.size()||Integer.parseInt(removeT.getText())<=0)
+		{
+			for(int i=0;i<PC.clientlist.size();i++)
+			{
+				model.addRow(new Object[]{(i+1),PC.clientlist.get(i).getcompanyname(),PC.clientlist.get(i).getcompanyid(),PC.clientlist.get(i).getcompanypw(),PC.clientlist.get(i).getcompanylocate(),PC.clientlist.get(i).getcompanyphonenum()});
+			}
+			JOptionPane.showMessageDialog(null, "일련번호를 잘못 입력하셨습니다.");
+		}
+		else
+		{
+			PC.clientlist.remove(Integer.parseInt(removeT.getText())-1);
+			for(int i=0;i<PC.clientlist.size();i++)
+			{
+				model.addRow(new Object[]{(i+1),PC.clientlist.get(i).getcompanyname(),PC.clientlist.get(i).getcompanyid(),PC.clientlist.get(i).getcompanypw(),PC.clientlist.get(i).getcompanylocate(),PC.clientlist.get(i).getcompanyphonenum()});
+			}	
+			JOptionPane.showMessageDialog(null, "제거되었습니다.");
+			removeT.setText("");
+		}
+	}
+	
+	public void save()
+	{
+		JOptionPane.showMessageDialog(null, "저장되었습니다.");
+		try{
+			fout = new FileOutputStream("clientlist.dat");
+			oos = new ObjectOutputStream(fout);
+			oos.writeObject(PC.clientlist);
+			oos.reset();
+		}catch(Exception ex){
+		}finally{
+			try{
+				oos.close();
+				fout.close();
+			}catch(IOException ioe){}
+		}
+	}
+	
+	public void modifyB()
+	{
+		for(int i=0;i<PC.clientlist.size();i++)
+		{
+			model.removeRow(0);
+		}
+		int num = Integer.parseInt(modifyT1.getText())-1;
+		String companyname = modifyT2.getText();
+		String companyid = modifyT3.getText();
+		String companypw = modifyT4.getText();
+		String companylocate = modifyT5.getText();
+		String companyphonenum = modifyT6.getText();
+		if(Integer.parseInt(removeT.getText())>=PC.clientlist.size()||Integer.parseInt(removeT.getText())<=0)
+		{
+			for(int i=0;i<PC.clientlist.size();i++)
+			{
+				model.addRow(new Object[]{(i+1),PC.clientlist.get(i).getcompanyname(),PC.clientlist.get(i).getcompanyid(),PC.clientlist.get(i).getcompanypw(),PC.clientlist.get(i).getcompanylocate(),PC.clientlist.get(i).getcompanyphonenum()});
+			}
+			JOptionPane.showMessageDialog(null, "일련번호를 잘못 입력하셨습니다.");
+		}
+		else
+		{
+			PC.clientlist.get(num).setcompanyname(companyname);
+			PC.clientlist.get(num).setcompanyid(companyid);
+			PC.clientlist.get(num).setcompanypw(companypw);
+			PC.clientlist.get(num).setcompanylocate(companylocate);
+			PC.clientlist.get(num).setcompanyphonenum(companyphonenum);
+			for(int i=0;i<PC.clientlist.size();i++)
+			{
+				model.addRow(new Object[]{(i+1),PC.clientlist.get(i).getcompanyname(),PC.clientlist.get(i).getcompanyid(),PC.clientlist.get(i).getcompanypw(),PC.clientlist.get(i).getcompanylocate(),PC.clientlist.get(i).getcompanyphonenum()});
+			}
+			JOptionPane.showMessageDialog(null, "수정되었습니다.");
+			modifyT1.setText("");
+			modifyT2.setText("");
+			modifyT3.setText("");
+			modifyT4.setText("");
+			modifyT5.setText("");
+			modifyT6.setText("");
+		}
+	}
+	
+	public void cancelB()
+	{
+		removeT.setText("");
+	}
+	
+	public void modifyB2()
+	{
+		modifyT1.setText("");
+		modifyT2.setText("");
+		modifyT3.setText("");
+		modifyT4.setText("");
+		modifyT5.setText("");
+		modifyT6.setText("");
+	}
+	
+	public void actionPerformed(ActionEvent e) 
+	{
+			if(e.getSource()==removeB)
+			{
+				removeB();
+			}
+			
+			else if(e.getSource()==save)
+			{
+				save();
+			}
+			
+			else if(e.getSource()==cancelB)
+			{
+				cancelB();
+			}
+			
+			else if(e.getSource()==modifyB)
+			{
+				modifyB();
+			}
+			
+			else if(e.getSource()==modifyB2)
+			{
+				modifyB2();
+			}
+			
+	}
+	
+}
