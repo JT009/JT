@@ -1,0 +1,70 @@
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class client implements Serializable
+{
+	private String companyname;
+	private String companyid;
+	private String companypw;
+	private String companylocate;
+	private String companyphonenum;
+	private ArrayList <user> US = new ArrayList <user>();
+	
+	client(String companyname, String companyid, String companypw, String companylocate, String companyphonenum, ArrayList <user> US)
+	{
+		this.US = US;
+		this.companyname = companyname;
+		this.companyid = companyid;
+		this.companypw = companypw;
+		this.companylocate = companylocate;
+		this.companyphonenum = companyphonenum;
+	}
+	
+	public String getcompanyname() {
+		return companyname;
+	}
+	
+	public String getcompanyid() {
+		return companyid;
+	}
+	
+	public String getcompanypw() {
+		return companypw;
+	}
+	
+	public String getcompanylocate() {
+		return companylocate;
+	}
+	
+	public String getcompanyphonenum() {
+		return companyphonenum;
+	}
+	
+	public void setcompanyname(String companyname) {
+		this.companyname = companyname;
+	}
+	
+	public void setcompanyid(String companyid) {
+		this.companyid = companyid;
+	}
+	
+	public void setcompanypw(String companypw) {
+		this.companypw = companypw;
+	}
+	
+	public void setcompanylocate(String companylocate) {
+		this.companylocate = companylocate;
+	}
+	
+	public void setcompanyphonenum(String companyphonenum) {
+		this.companyphonenum = companyphonenum;
+	}
+
+	public ArrayList <user> getUS() {
+		return US;
+	}
+
+	public void setUS(ArrayList <user> uS) {
+		this.US = uS;
+	}
+}
