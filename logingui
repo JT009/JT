@@ -1,0 +1,145 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+
+public class logingui extends JFrame implements ActionListener 
+{
+	PCcontroller PC = new PCcontroller();
+	
+	JFrame jf = new JFrame();
+	JPanel jp = new JPanel();
+	JLabel jl = new JLabel("PC방 관리자");
+	JPanel jlP = new JPanel();
+	
+	JButton adminmode = new JButton("관리자 모드");
+	
+	JLabel idL = new JLabel("아이디");
+	JTextField idT = new JTextField();
+	
+	JLabel pwL = new JLabel("비밀번호");
+	JPasswordField pwT = new JPasswordField();
+	
+	JButton loginB = new JButton("로그인");
+	JButton joinB = new JButton("회원가입");
+
+	int num = 0;
+	boolean checkid = false;
+	boolean checkpw = false;
+	
+	logingui()
+	{
+		jf.setLayout(null);
+		jf.setTitle("로그인");
+		jf.setSize(500,500);
+		jf.getContentPane().setBackground(Color.LIGHT_GRAY);
+		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		jp.setLayout(null);
+		jp.setBounds(50,50,380,380);
+		jp.setBorder(new LineBorder(Color.black,1));
+		jf.add(jp);
+		
+		adminmode.setBounds(300,10,120,30);
+		adminmode.addActionListener(this);	
+		jf.add(adminmode);
+		
+		jlP.setLayout(new BorderLayout());
+		jlP.setBounds(40, 20, 300, 50);
+		jlP.setBorder(new LineBorder(Color.black,1));
+		jlP.setBackground(Color.white);
+		jl.setFont(new Font("필기체",1,30));
+		jlP.add(jl,"Center");
+		jl.setHorizontalAlignment(JLabel.CENTER);
+		jp.add(jlP);
+		
+		idL.setBounds(40,140,100,25);
+		idT.setBounds(100,140,230,25);
+		jp.add(idL);
+		jp.add(idT);
+		
+		pwL.setBounds(40,170,100,25);
+		pwT.setBounds(100,170,230,25);
+		jp.add(pwL);
+		jp.add(pwT);
+		
+		loginB.setBounds(80,230,100,30);
+		loginB.addActionListener(this);	
+		joinB.setBounds(200,230,100,30);
+		joinB.addActionListener(this);	
+		jp.add(loginB);
+		jp.add(joinB);
+		
+		jf.setVisible(true);
+	}
+
+	public void loginB()
+	{
+		for(int i=0;i<PC.clientlist.size();i++)
+		{
+			if(PC.clientlist.get(i).getcompanyid().equals(idT.getText()))
+			{
+				checkid = true;
+				num = i;
+				if(PC.clientlist.get(i).getcompanypw().equals(pwT.getText()))
+				{
+					checkpw = true;
+				}
+			} 
+		}
+		if(checkid==true&&checkpw==true)
+		{
+			JOptionPane.showMessageDialog(null, "접속 되었습니다.");
+			idT.setText("");
+			pwT.setText("");
+			jf.dispose();
+			usergui user = new usergui(num);
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(null, "아이디 혹은 비밀번호가 잘못되었습니다.");
+			idT.setText("");
+			pwT.setText("");
+		}
+	}
+	public void joinB()
+	{
+		clientjoingui clientjoin = new clientjoingui();
+	}
+
+	public void adminmode()
+	{
+		adminmodegui admin = new adminmodegui();
+	}
+	
+	public void actionPerformed(ActionEvent e) 
+	{
+		if(e.getSource() == loginB)
+		{
+			loginB();
+		}
+		
+		else if(e.getSource() == joinB)
+		{
+			joinB();
+		}
+		
+		else if(e.getSource() == adminmode)
+		{
+			adminmode();
+		}
+		
+	}
+
+
+}
