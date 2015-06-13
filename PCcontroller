@@ -1,0 +1,34 @@
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.io.*;
+
+public class PCcontroller 
+{
+	static ArrayList <client> clientlist = new ArrayList <client>();
+	
+	static FileInputStream fin = null;
+	static ObjectInputStream ois = null;
+	
+	public static void load()
+	{
+		try{
+			fin = new FileInputStream("clientlist.dat");
+			ois = new ObjectInputStream(fin);
+			clientlist = (ArrayList)ois.readObject();
+		}catch(Exception ex){
+		}finally{
+			try{
+				ois.close();
+				fin.close();
+			}catch(IOException ioe){}
+		} 
+	}
+	
+	public static void main(String[] args) 
+	{
+		
+		load();
+		logingui login = new logingui();
+	}
+
+}
