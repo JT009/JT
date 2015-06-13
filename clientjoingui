@@ -1,0 +1,196 @@
+import java.awt.BorderLayout;
+import java.awt.Choice;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+
+public class clientjoingui extends JFrame implements ActionListener 
+{	
+	PCcontroller PC = new PCcontroller();
+	ArrayList <user> US = new ArrayList <user>();
+	
+	FileOutputStream fout = null;
+	ObjectOutputStream oos = null;
+	
+	JFrame jf = new JFrame();
+	JPanel jp = new JPanel();
+	JLabel jl = new JLabel("회원가입");
+	JPanel jlP = new JPanel();
+	
+	JLabel companynameL = new JLabel("상호명");
+	JTextField companynameT = new JTextField("");
+	
+	JLabel companyidL = new JLabel("아이디");
+	JButton companyB = new JButton("중복검사");
+	JTextField companyidT = new JTextField("");
+	
+	JLabel companypwL = new JLabel("비밀번호");
+	JPasswordField companypwT = new JPasswordField("");
+	
+	JLabel companylocateL = new JLabel("위치");
+	Choice companylocateC = new Choice();
+	JTextField companylocateT = new JTextField("");
+	
+	JLabel companyphonenumL = new JLabel("전화번호");
+	Choice companyphonenumC = new Choice();
+	JTextField companyphonenumT = new JTextField("");
+	JTextField companyphonenumT1 = new JTextField("");
+	
+	JButton joinB = new JButton("가입");
+	JButton cancelB = new JButton("취소");
+	
+	clientjoingui()
+	{
+		jf.setLayout(null);
+		jf.setTitle("회원가입");
+		jf.setSize(600,600);
+		jf.getContentPane().setBackground(Color.LIGHT_GRAY);
+		
+		jp.setLayout(null);
+		jp.setBounds(20,20,540,520);
+		jf.add(jp);
+		
+		jlP.setLayout(new BorderLayout());
+		jlP.setBounds(80,20,350,30);
+		jl.setFont(new Font("필기체",1,30));
+		jlP.add(jl);
+		jlP.setBackground(Color.white);
+		jlP.setBorder(new LineBorder(Color.black,1));
+		jl.setHorizontalAlignment(JLabel.CENTER);
+		jp.add(jlP);
+		
+		
+		companynameL.setBounds(85,100,100,25);
+		companynameT.setBounds(185,100,250,25);
+		jp.add(companynameL);
+		jp.add(companynameT);
+		
+		companyidL.setBounds(85,150,100,25);
+		companyidT.setBounds(185,150,250,25);
+		jp.add(companyidL);
+		jp.add(companyidT);
+		
+		companypwL.setBounds(85,200,100,25);
+		companypwT.setBounds(185,200,250,25);
+		jp.add(companypwL);
+		jp.add(companypwT);
+		
+		companylocateL.setBounds(85,250,100,25);
+		companylocateC.setBounds(185,250,100,25);
+		companylocateC.add("경기");
+		companylocateC.add("서울");
+		companylocateC.add("인천");
+		companylocateC.add("강원");
+		companylocateC.add("충남");
+		companylocateC.add("충북");
+		companylocateC.add("전북");
+		companylocateC.add("전남");
+		companylocateC.add("대전");
+		companylocateC.add("울산");
+		companylocateC.add("부산");
+		companylocateC.add("대구");
+		companylocateC.add("경북");
+		companylocateC.add("경남");
+		companylocateC.add("제주");
+		companylocateC.add("광주");
+		companylocateT.setBounds(295,250,140,25);
+		jp.add(companylocateL);
+		jp.add(companylocateC);
+		jp.add(companylocateT);
+		
+		companyphonenumL.setBounds(85,300,100,25);
+		companyphonenumC.setBounds(185,300,80,25);
+		companyphonenumC.add("010");
+		companyphonenumC.add("011");
+		companyphonenumC.add("019");
+		companyphonenumC.add("017");
+		companyphonenumC.add("018");
+		companyphonenumT.setBounds(275,300,75,25);
+		companyphonenumT1.setBounds(360,300,75,25);
+		jp.add(companyphonenumL);
+		jp.add(companyphonenumC);
+		jp.add(companyphonenumT);
+		jp.add(companyphonenumT1);
+		
+		joinB.setBounds(100,380,100,25);
+		joinB.addActionListener(this);	
+		cancelB.setBounds(320,380,100,25);
+		cancelB.addActionListener(this);	
+		jp.add(joinB);
+		jp.add(cancelB);
+		
+		jf.setVisible(true);
+	}
+
+	public void joinB()
+	{
+		Boolean overlap = false;
+		String companyname = companynameT.getText();
+		String companyid = companyidT.getText();
+		String companypw = companypwT.getText();
+		String companylocate = companylocateC.getSelectedItem() + "-" + companylocateT.getText();
+		String companyphonenum = companyphonenumC.getSelectedItem() + "-" + companyphonenumT.getText() + "-" + companyphonenumT1.getText();
+		if(PC.clientlist.size()!=0)
+		{
+			for(int i=0;i<PC.clientlist.size();i++)
+			{
+				if(PC.clientlist.get(i).getcompanyname().equals(companyname))
+				{
+					JOptionPane.showMessageDialog(null, "중복되는 아이디가 존재합니다.");
+					companyidT.setText("");
+				}
+				else
+				{
+					overlap=true;
+				}
+				
+			}
+			if(overlap==true)
+			{
+				PC.clientlist.add(new client(companyname,companyid,companypw,companylocate,companyphonenum,US));
+				JOptionPane.showMessageDialog(null, "회원가입 되셨습니다.");
+				jf.dispose();
+			}
+		}
+		
+		else
+		{
+				PC.clientlist.add(new client(companyname,companyid,companypw,companylocate,companyphonenum,US));
+				JOptionPane.showMessageDialog(null, "회원가입 되셨습니다.");
+				jf.dispose();
+		}
+	}
+	
+	public void cancelB()
+	{
+		System.out.println(PC.clientlist.size());
+		jf.dispose();
+	}
+	
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource() == joinB )
+		{
+			joinB();
+		}
+		else if(e.getSource() == cancelB)
+		{
+			cancelB();
+		}
+		
+	}
+}
