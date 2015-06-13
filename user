@@ -1,0 +1,57 @@
+import java.io.Serializable;
+
+
+public class user implements Serializable
+{
+	private int ilnum;
+	private String stime;
+	private String ftime;
+	private int totalprice;
+	private int seatnum;
+	user(int ilnum, String stime, String ftime,int totalprice,int seatnum)
+	{
+		this.ilnum = ilnum;
+		this.stime = stime;
+		this.ftime = ftime;
+		this.totalprice = totalprice;
+		this.seatnum = seatnum;
+	}
+	
+	public int gettotalprice() {
+		return totalprice;
+	}
+	public String getstime() {
+		return stime;
+	}
+
+	public String getftime() {
+		return ftime;
+	}
+	
+	public void settotal(int totalprice) {
+		this.totalprice = totalprice;
+	}
+	public void setstime(String stime) {
+		this.stime = stime;
+	}
+
+	public void setftime(String ftime) {
+		this.ftime = ftime;
+	}
+
+	public int getseatnum() {
+		return seatnum;
+	}
+	
+	public void setseatnum(int seatnum) {
+		this.seatnum = seatnum;
+	}
+	public int getilnum() {
+		return ilnum;
+	}
+	
+	public void setilnum(int ilnum) {
+		this.ilnum = ilnum;
+	}
+	
+}
