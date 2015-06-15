@@ -52,7 +52,7 @@ public class adminmodegui extends JFrame implements ActionListener
 	JButton cancelB = new JButton("취소");
 	
 	JPanel modifyP = new JPanel();
-	JLabel modifyL = new JLabel("[가맹점 정보 수정]");
+	JLabel modifyL = new JLabel("[가맹점 정보수정]");
 	JLabel modifyL1 = new JLabel("일련번호");
 	JLabel modifyL2 = new JLabel("가맹상호명");
 	JLabel modifyL3 = new JLabel("아이디");
@@ -113,6 +113,7 @@ public class adminmodegui extends JFrame implements ActionListener
 		removeB.setBounds(300,10,100,30);
 		removeB.addActionListener(this);
 		cancelB.setBounds(460,10,100,30);
+		cancelB.addActionListener(this);
 		removeP.add(removeL1);
 		removeP.add(removeT);
 		removeP.add(removeB);
@@ -162,27 +163,34 @@ public class adminmodegui extends JFrame implements ActionListener
 	
 	public void removeB()
 	{
-		for(int i=0;i<PC.clientlist.size();i++)
-		{
-			model.removeRow(0);
-		}
-		if(Integer.parseInt(removeT.getText())>=PC.clientlist.size()||Integer.parseInt(removeT.getText())<=0)
+		try
 		{
 			for(int i=0;i<PC.clientlist.size();i++)
 			{
-				model.addRow(new Object[]{(i+1),PC.clientlist.get(i).getcompanyname(),PC.clientlist.get(i).getcompanyid(),PC.clientlist.get(i).getcompanypw(),PC.clientlist.get(i).getcompanylocate(),PC.clientlist.get(i).getcompanyphonenum()});
+				model.removeRow(0);
 			}
+			if(Integer.parseInt(removeT.getText())>PC.clientlist.size()||Integer.parseInt(removeT.getText())<=0)
+			{
+				JOptionPane.showMessageDialog(null, "일련번호를 잘못 입력하셨습니다.");
+			}
+			else
+			{
+				PC.clientlist.remove(Integer.parseInt(removeT.getText())-1);
+				for(int i=0;i<PC.clientlist.size();i++)
+				{
+					model.addRow(new Object[]{(i+1),PC.clientlist.get(i).getcompanyname(),PC.clientlist.get(i).getcompanyid(),PC.clientlist.get(i).getcompanypw(),PC.clientlist.get(i).getcompanylocate(),PC.clientlist.get(i).getcompanyphonenum()});
+				}	
+				JOptionPane.showMessageDialog(null, "제거되었습니다.");
+				removeT.setText("");
+			}
+		}
+		catch(Exception e)
+		{
 			JOptionPane.showMessageDialog(null, "일련번호를 잘못 입력하셨습니다.");
 		}
-		else
+		for(int i=0;i<PC.clientlist.size();i++)
 		{
-			PC.clientlist.remove(Integer.parseInt(removeT.getText())-1);
-			for(int i=0;i<PC.clientlist.size();i++)
-			{
-				model.addRow(new Object[]{(i+1),PC.clientlist.get(i).getcompanyname(),PC.clientlist.get(i).getcompanyid(),PC.clientlist.get(i).getcompanypw(),PC.clientlist.get(i).getcompanylocate(),PC.clientlist.get(i).getcompanyphonenum()});
-			}	
-			JOptionPane.showMessageDialog(null, "제거되었습니다.");
-			removeT.setText("");
+			model.addRow(new Object[]{(i+1),PC.clientlist.get(i).getcompanyname(),PC.clientlist.get(i).getcompanyid(),PC.clientlist.get(i).getcompanypw(),PC.clientlist.get(i).getcompanylocate(),PC.clientlist.get(i).getcompanyphonenum()});
 		}
 	}
 	
@@ -209,38 +217,61 @@ public class adminmodegui extends JFrame implements ActionListener
 		{
 			model.removeRow(0);
 		}
-		int num = Integer.parseInt(modifyT1.getText())-1;
+		String num = modifyT1.getText();
 		String companyname = modifyT2.getText();
 		String companyid = modifyT3.getText();
 		String companypw = modifyT4.getText();
 		String companylocate = modifyT5.getText();
 		String companyphonenum = modifyT6.getText();
-		if(Integer.parseInt(removeT.getText())>=PC.clientlist.size()||Integer.parseInt(removeT.getText())<=0)
+		try
 		{
-			for(int i=0;i<PC.clientlist.size();i++)
+			if(Integer.parseInt(modifyT1.getText())-1>PC.clientlist.size()||Integer.parseInt(modifyT1.getText())-1<=0)
 			{
-				model.addRow(new Object[]{(i+1),PC.clientlist.get(i).getcompanyname(),PC.clientlist.get(i).getcompanyid(),PC.clientlist.get(i).getcompanypw(),PC.clientlist.get(i).getcompanylocate(),PC.clientlist.get(i).getcompanyphonenum()});
+				JOptionPane.showMessageDialog(null, "일련번호를 잘못 입력하셨습니다.");
 			}
+			else if(companyname.equals(""))
+			{
+				JOptionPane.showMessageDialog(null, "상호명을 다시 입력하세요.");
+			}
+			else if(companyid.equals(""))
+			{
+				JOptionPane.showMessageDialog(null, "아이디를 다시 입력하세요.");
+			}
+			else if(companypw.equals(""))
+			{
+				JOptionPane.showMessageDialog(null, "비밀번호를 다시 입력하세요.");
+			}
+			else if(companylocate.equals(""))
+			{
+				JOptionPane.showMessageDialog(null, "위치를 다시 입력하세요.");
+			}
+			else if(modifyT6.getText().equals(""))
+			{
+				JOptionPane.showMessageDialog(null, "전화번호를 다시 입력하세요.");
+			}
+			else
+			{
+				PC.clientlist.get(Integer.parseInt(num)-1).setcompanyname(companyname);
+				PC.clientlist.get(Integer.parseInt(num)-1).setcompanyid(companyid);
+				PC.clientlist.get(Integer.parseInt(num)-1).setcompanypw(companypw);
+				PC.clientlist.get(Integer.parseInt(num)-1).setcompanylocate(companylocate);
+				PC.clientlist.get(Integer.parseInt(num)-1).setcompanyphonenum(companyphonenum);
+				JOptionPane.showMessageDialog(null, "수정되었습니다.");
+				modifyT1.setText("");
+				modifyT2.setText("");
+				modifyT3.setText("");
+				modifyT4.setText("");
+				modifyT5.setText("");
+				modifyT6.setText("");
+			}
+		}
+		catch(Exception e)
+		{
 			JOptionPane.showMessageDialog(null, "일련번호를 잘못 입력하셨습니다.");
 		}
-		else
+		for(int i=0;i<PC.clientlist.size();i++)
 		{
-			PC.clientlist.get(num).setcompanyname(companyname);
-			PC.clientlist.get(num).setcompanyid(companyid);
-			PC.clientlist.get(num).setcompanypw(companypw);
-			PC.clientlist.get(num).setcompanylocate(companylocate);
-			PC.clientlist.get(num).setcompanyphonenum(companyphonenum);
-			for(int i=0;i<PC.clientlist.size();i++)
-			{
-				model.addRow(new Object[]{(i+1),PC.clientlist.get(i).getcompanyname(),PC.clientlist.get(i).getcompanyid(),PC.clientlist.get(i).getcompanypw(),PC.clientlist.get(i).getcompanylocate(),PC.clientlist.get(i).getcompanyphonenum()});
-			}
-			JOptionPane.showMessageDialog(null, "수정되었습니다.");
-			modifyT1.setText("");
-			modifyT2.setText("");
-			modifyT3.setText("");
-			modifyT4.setText("");
-			modifyT5.setText("");
-			modifyT6.setText("");
+			model.addRow(new Object[]{(i+1),PC.clientlist.get(i).getcompanyname(),PC.clientlist.get(i).getcompanyid(),PC.clientlist.get(i).getcompanypw(),PC.clientlist.get(i).getcompanylocate(),PC.clientlist.get(i).getcompanyphonenum()});
 		}
 	}
 	
