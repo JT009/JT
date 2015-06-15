@@ -144,34 +144,64 @@ public class clientjoingui extends JFrame implements ActionListener
 		String companypw = companypwT.getText();
 		String companylocate = companylocateC.getSelectedItem() + "-" + companylocateT.getText();
 		String companyphonenum = companyphonenumC.getSelectedItem() + "-" + companyphonenumT.getText() + "-" + companyphonenumT1.getText();
-		if(PC.clientlist.size()!=0)
+		if(companyname.equals(""))
 		{
-			for(int i=0;i<PC.clientlist.size();i++)
+			JOptionPane.showMessageDialog(null, "상호명을 다시 입력하세요.");
+		}
+		else if(companyid.equals(""))
+		{
+			JOptionPane.showMessageDialog(null, "아이디를 다시 입력하세요.");
+		}
+		else if(companypw.equals(""))
+		{
+			JOptionPane.showMessageDialog(null, "비밀번호를 다시 입력하세요.");
+		}
+		else if(companylocate.equals(""))
+		{
+			JOptionPane.showMessageDialog(null, "위치를 다시 입력하세요.");
+		}
+		else if(companyphonenumT.getText().equals("")||companyphonenumT1.getText().equals(""))
+		{
+			JOptionPane.showMessageDialog(null, "전화번호를 다시 입력하세요.");
+		}
+		else
+		{
+			if(PC.clientlist.size()!=0)
 			{
-				if(PC.clientlist.get(i).getcompanyname().equals(companyname))
+				for(int i=0;i<PC.clientlist.size();i++)
 				{
-					JOptionPane.showMessageDialog(null, "중복되는 아이디가 존재합니다.");
-					companyidT.setText("");
+					if(PC.clientlist.get(i).getcompanyid().equals(companyid))
+					{
+						JOptionPane.showMessageDialog(null, "중복되는 아이디가 존재합니다.");
+						companyidT.setText("");
+						break;
+					}
+					else
+					{
+						overlap=true;
+					}
+				
+				}
+				if(overlap==true)
+				{
+					PC.clientlist.add(new client(companyname,companyid,companypw,companylocate,companyphonenum,US));
+					JOptionPane.showMessageDialog(null, "회원가입 되셨습니다.");
+					overlap=false;
+					jf.dispose();
 				}
 				else
 				{
-					overlap=true;
+					
 				}
-				
 			}
-			if(overlap==true)
+		
+		
+			else
 			{
 				PC.clientlist.add(new client(companyname,companyid,companypw,companylocate,companyphonenum,US));
 				JOptionPane.showMessageDialog(null, "회원가입 되셨습니다.");
 				jf.dispose();
 			}
-		}
-		
-		else
-		{
-				PC.clientlist.add(new client(companyname,companyid,companypw,companylocate,companyphonenum,US));
-				JOptionPane.showMessageDialog(null, "회원가입 되셨습니다.");
-				jf.dispose();
 		}
 	}
 	
